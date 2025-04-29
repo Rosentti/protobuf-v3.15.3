@@ -136,16 +136,14 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
   format(
       "$dllexport_decl $bool $classname$_IsValid(int value);\n"
       "constexpr $classname$ ${1$$prefix$$short_name$_MIN$}$ = "
-      "$prefix$$2$;\n"
-      "constexpr $classname$ ${1$$prefix$$short_name$_MAX$}$ = "
-      "$prefix$$3$;\n",
-      descriptor_, EnumValueName(min_value), EnumValueName(max_value));
+      "$prefix$$2$;\n",
+      descriptor_, EnumValueName(min_value));
 
   if (generate_array_size_) {
     format(
         "constexpr int ${1$$prefix$$short_name$_ARRAYSIZE$}$ = "
-        "$prefix$$short_name$_MAX + 1;\n\n",
-        descriptor_);
+        "$prefix$$2$ + 1;\n",
+        descriptor_, EnumValueName(max_value));
   }
 
   if (HasDescriptorMethods(descriptor_->file(), options_)) {
