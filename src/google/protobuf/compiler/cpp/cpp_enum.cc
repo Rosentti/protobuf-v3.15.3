@@ -89,6 +89,18 @@ EnumGenerator::EnumGenerator(const EnumDescriptor* descriptor,
 
 EnumGenerator::~EnumGenerator() {}
 
+// From stackoverflow: https://stackoverflow.com/a/874160
+bool hasEnding (std::string const &fullString, std::string const &ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+    } else {
+        return false;
+    }
+}
+
+std::string maxEnd = "_MAX";
+std::string minEnd = "_MIN";
+
 void EnumGenerator::GenerateDefinition(io::Printer* printer) {
   Formatter format(printer, variables_);
   format("enum ${1$$classname$$}$ : int {\n", descriptor_);
@@ -133,11 +145,23 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
   format.Outdent();
   format("\n};\n");
 
-  format(
-      "$dllexport_decl $bool $classname$_IsValid(int value);\n"
-      "constexpr $classname$ ${1$$prefix$$short_name$_MIN$}$ = "
-      "$prefix$$2$;\n",
-      descriptor_, EnumValueName(min_value));
+  format("$dllexport_decl $bool $classname$_IsValid(int value);\n");
+
+  if (hasEnding(min_value->name(), minEnd))
+  {
+    format(
+        "constexpr $classname$ ${1$$prefix$$short_name$_MIN$}$ = "
+        "$prefix$$2$;\n"
+        descriptor_, EnumValueName(min_value));
+  }
+
+  if (hasEnding(max_value->name(), maxEnd))
+  {
+    format(
+        "constexpr $classname$ ${1$$prefix$$short_name$_MAX$}$ = "
+        "$prefix$$2$;\n",
+        descriptor_, EnumValueName(max_value));
+  }
 
   if (generate_array_size_) {
     format(
