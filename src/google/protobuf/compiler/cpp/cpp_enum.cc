@@ -151,7 +151,7 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
   {
     format(
         "constexpr $classname$ ${1$$prefix$$short_name$_MIN$}$ = "
-        "$prefix$$2$;\n"
+        "$prefix$$2$;\n",
         descriptor_, EnumValueName(min_value));
   }
 
