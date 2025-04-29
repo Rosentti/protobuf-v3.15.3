@@ -147,7 +147,7 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
 
   format("$dllexport_decl $bool $classname$_IsValid(int value);\n");
 
-  if (hasEnding(min_value->name(), minEnd))
+  if (!hasEnding(min_value->name(), minEnd))
   {
     format(
         "constexpr $classname$ ${1$$prefix$$short_name$_MIN$}$ = "
@@ -155,7 +155,7 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
         descriptor_, EnumValueName(min_value));
   }
 
-  if (hasEnding(max_value->name(), maxEnd))
+  if (!hasEnding(max_value->name(), maxEnd))
   {
     format(
         "constexpr $classname$ ${1$$prefix$$short_name$_MAX$}$ = "
@@ -166,8 +166,8 @@ void EnumGenerator::GenerateDefinition(io::Printer* printer) {
   if (generate_array_size_) {
     format(
         "constexpr int ${1$$prefix$$short_name$_ARRAYSIZE$}$ = "
-        "$prefix$$2$ + 1;\n",
-        descriptor_, EnumValueName(max_value));
+        "$prefix$$short_name$_MAX + 1;\n\n",
+        descriptor_);
   }
 
   if (HasDescriptorMethods(descriptor_->file(), options_)) {
